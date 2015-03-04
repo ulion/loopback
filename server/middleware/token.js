@@ -46,11 +46,16 @@ module.exports = token;
 function token(options) {
   options = options || {};
   var TokenModel = options.model || loopback.AccessToken;
+  if (typeof TokenModel === 'string') {
+    // Make it possible to configure the model in middleware.json
+    TokenModel = loopback.getModel(TokenModel);
+  }
   var currentUserLiteral = options.currentUserLiteral;
   if (currentUserLiteral && (typeof currentUserLiteral !== 'string')) {
     currentUserLiteral = 'me';
   }
-  assert(TokenModel, 'loopback.token() middleware requires a AccessToken model');
+  assert(typeof TokenModel === 'function',
+    'loopback.token() middleware requires a AccessToken model');
 
   return function(req, res, next) {
     if (req.accessToken !== undefined) return next();
