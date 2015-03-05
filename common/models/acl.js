@@ -256,10 +256,10 @@ module.exports = function(ACL) {
     var staticACLs = [];
     if (modelClass && modelClass.settings.acls) {
       modelClass.settings.acls.forEach(function(acl) {
-        if (!acl.property || acl.property === ACL.ALL || property === acl.property) {
+        if (!acl.property || acl.property === ACL.ALL || property === acl.property || Array.isArray(acl.property) && acl.property.indexOf(property) >= 0) {
           staticACLs.push(new ACL({
             model: model,
-            property: acl.property || ACL.ALL,
+            property: Array.isArray(acl.property) ? property : (acl.property || ACL.ALL),
             principalType: acl.principalType,
             principalId: acl.principalId, // TODO: Should it be a name?
             accessType: acl.accessType || ACL.ALL,
